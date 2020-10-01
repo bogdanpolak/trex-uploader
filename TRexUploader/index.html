@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TRex Data Uploder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link href="trex-uploader.css" rel="stylesheet" />
+    <script src="uploader-app.js?ts=1555"></script>
+  </head>
+  <body>
+
+    <div class="container">
+      <div class="jumbotron pt-3">
+        <h1 class="display-4">TRex Data Uploder</h1>
+      </div>
+    </div>
+    <div class="container" id="import-page">
+      <form>
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Facility</label>
+          <select class="form-control" name="facilityid" id="facilityid">
+            <option>OhioHealth Grant Medical Center (2652)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Facility</label>
+          <select class="form-control" name="period" id="period">
+            <option value="2020-01">January 2020</option>
+            <option value="2020-02">February 2020</option>
+            <option value="2020-03">March 2020</option>
+            <option value="2020-04">April 2020</option>
+            <option value="2020-05">May 2020</option>
+            <option value="2020-06">June 2020</option>
+            <option value="2020-07">July 2020</option>
+            <option value="2020-08">August 2020</option>
+            <option value="2020-09" selected>September 2020</option>
+            <option value="2020-10">October 2020</option>
+            <option value="2020-11">November 2020</option>
+            <option value="2020-12">December 2020</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlFile1">Example file input</label>
+          <input type="file" class="form-control-file" id="exampleFormControlFile1">
+        </div>
+        <button type="submit" class="btn btn-success">Submit <span class="fa fa-arrow-right"></span></button>
+
+      </form>
+    </div>
+    <section id="dynamic">
+    </section>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  <script>
+    function main () {
+      document.getElementById("dynamic").innerHTML = 'aaaa';
+    }
+    main();
+  </script>
+</html>
