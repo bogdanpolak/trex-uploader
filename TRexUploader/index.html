@@ -16,16 +16,16 @@
       </div>
     </div>
     <div class="container" id="import-page">
-      <form>
+      <form id="data-upload">
         <div class="form-group">
-          <label for="exampleFormControlSelect1">Facility</label>
-          <select class="form-control" name="facilityid" id="facilityid">
-            <option>OhioHealth Grant Medical Center (2652)</option>
+          <label for="theFacilityid">Facility</label>
+          <select class="form-control" name="facilityid" id="theFacilityid">
+            <option value="2652">OhioHealth Grant Medical Center (2652)</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="exampleFormControlSelect1">Facility</label>
-          <select class="form-control" name="period" id="period">
+          <label for="thePeriod">Period (month)</label>
+          <select class="form-control" name="period" id="thePeriod">
             <option value="2020-01">January 2020</option>
             <option value="2020-02">February 2020</option>
             <option value="2020-03">March 2020</option>
@@ -41,10 +41,10 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="exampleFormControlFile1">Example file input</label>
-          <input type="file" class="form-control-file" id="exampleFormControlFile1">
+          <label for="theFile">Example file input</label>
+          <input type="file" class="form-control-file" id="theFile">
         </div>
-        <button type="submit" class="btn btn-success">Submit <span class="fa fa-arrow-right"></span></button>
+        <button class="btn btn-success">Submit</button>
 
       </form>
     </div>
