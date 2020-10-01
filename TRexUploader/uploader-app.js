@@ -4,11 +4,11 @@
 
 const uploadProcesor = {
 
-    urlImport: 'http://localhost:3000/import',
+    urlImport: 'unknown',
     idFileInput: "theFile",
     idFacility: 'theFacilityid',
     idPeriod: 'thePeriod',
-    
+
     fileBinary: null,
     dataToPost: null,
     partBoundaryCode: 'hackathon2020',
