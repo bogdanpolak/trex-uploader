@@ -14,9 +14,10 @@ const uploadProcesor = {
     idPeriod: 'thePeriod',
 
     fileBinary: null,
-    dataToPost: null,
+    // dataToPost: null,
     partBoundaryCode: 'hackathon2020',
 
+    /*
     addTextPart: function (name, value) {
         data = "--" + this.partBoundaryCode + "\r\n";
         data += 'content-disposition: form-data; name="' + name + '"\r\n';
@@ -36,24 +37,31 @@ const uploadProcesor = {
         }
         return data;
     },
+    */
     sendUploadFormData: function (data) {
-        const XHR = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
         const self = this;
-        XHR.addEventListener( 'load', function( event ) {
+        xhr.addEventListener( 'load', function( event ) {
             if (self.onSucsses) self.onSucsses();
         } );
-        XHR.addEventListener( 'error', function( event ) {
+        xhr.addEventListener( 'error', function( event ) {
             if (self.onFailure) self.onFailure();
         } );
-        XHR.open( 'POST', this.urlImport );
-        XHR.setRequestHeader( 'Content-Type','multipart/form-data;'
+        xhr.addEventListener("readystatechange", function() {
+            if(this.readyState === 4) 
+                console.log(this.responseText);
+        });
+        xhr.open( 'POST', this.urlImport );
+        xhr.setRequestHeader( 'Content-Type','multipart/form-data;'
             +' boundary='+ this.partBoundaryCode );
-        XHR.send( this.dataToPost );
+        xhr.send( data );
     },
     onSubmitFormAndWhenFileIsReady: function () {
         const facilitySel = document.getElementById( this.idFacility );
         const periodSel = document.getElementById( this.idPeriod );
         const fileInput = document.getElementById( this.idFileInput );
+        /*
         const partToken = this.addTextPart('token', '00000-11111-22222');
         const partFacility = this.addTextPart(facilitySel.name, facilitySel.value);
         const partPeriod = this.addTextPart(periodSel.name, periodSel.value);
@@ -64,7 +72,13 @@ const uploadProcesor = {
             + headerFile 
             + this.fileBinary + '\r\n';
             + "--" + this.partBoundaryCode + "--";
-        this.sendUploadFormData();
+        */
+        var data = new FormData();
+        data.append('token', '00000-11111-22222');
+        data.append('file', fileInput.files[0], fileInput.files[0].name);
+        data.append('facilityid', facilitySel.value);
+        data.append('period', periodSel.value);
+        this.sendUploadFormData(data);
     },
     init: function (){
         const fileInput = document.getElementById(this.idFileInput)
