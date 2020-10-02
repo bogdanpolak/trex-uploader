@@ -1,4 +1,18 @@
 .progress {
     height: 30px; /* needs to be an absolute measurement unless one of it's parent has an absolute height */
 }
+.report-table div {
+    text-align: center;
+    margin: 1em 50px 0.5em 50px;
+    border-bottom: 1px dotted #d0d0d0;
+}
+.report-table .red {
+    color: red;
+}
+.report-table .yellow {
+    color: rgb(200, 150, 0);
+}
+.report-table .count {
+    padding-left: 12px;
+}
   

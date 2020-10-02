@@ -49,8 +49,10 @@ const uploadProcesor = {
             if (self.onFailure) self.onFailure();
         } );
         xhr.addEventListener("readystatechange", function() {
-            if(this.readyState === 4) 
+            if(this.readyState === 4) {
                 console.log(this.responseText);
+                // const json = JSON.parse(xhr.responseText);
+            }
         });
         xhr.open( 'POST', this.urlImport );
         /*
@@ -162,44 +164,61 @@ const progressPageProcesor = {
 }
 
 // ------------------------------------------------------------
-// Progress page
+// Report page
 // ------------------------------------------------------------
 
-/* 
-var cars = [{ make: 'audi', model: 'r8', year: '2012' }, { make: 'audi', model: 'rs5', year: '2013' }, { make: 'ford', model: 'mustang', year: '2012' }, { make: 'ford', model: 'fusion', year: '2015' }, { make: 'kia', model: 'optima', year: '2012' }]
-cars.reduce(function (previous, obj, idx) {
-        previous[obj.make] = previous[obj.make] || [];
-        previous[obj.make].push(obj);
-        return previous;
-    }, Object.create(null));
+/*
+https://gomakethings.com/how-to-use-the-fetch-api-with-vanilla-js/
+
+fetch('https://jsonplaceholder.typicode.com/posts')
+	.then(function (response) {
+		return response.json();
+	})
+	.then(function (data) {
+		console.log(data);
+    });
 */
 
-function nn(node, tagName, text) {
-    var newNode = document.createElement('div');
-    node.append(newNode);
-
+function nn(tagName, tagClassName, text) {
+    var newNode = document.createElement(tagName);
+    if (tagClassName) {
+        newNode.classList.add(tagClassName);
+    }
+    newNode.innerHTML = text
+    return newNode;
 }
 
 const reportPageProcesor = {
     
     idReportPageDiv: 'report-page',
+    cssReportTable: 'report-table',
 
-    /*
-    buildReportItems: function(divReportPage) {
+    buildReportItems: function(divReportPage,resultData) {
         var divReportTable = document.createElement('div');
-        divReportTable.classList.add("report-table");
+        divReportTable.classList.add(this.cssReportTable);
         divReportPage.append(divReportTable);
-    
-        data.forEach( (reportItem, index) => {
-            this.insertItem(reportItem)
-        });
+        resultData.forEach( (item) => {
+            divReportTable.append( 
+                nn('div',
+                    (item.type=='error'?'red':'yellow'),
+                    item.message+': <span class="count">'+item.count+'</span>') 
+            );
+            
+            });
     },
-    */
     show: function () {
         const divReportPage = document.getElementById(this.idReportPageDiv);
         divReportPage.style.display = 'block';
         const data = testReportData;
-        // this.buildReportItems(divReportPage);
+        var result = data.reduce(function (previous, obj, idx) {
+            const j = previous.findIndex((o2)=>(o2.message==obj.message));
+            if (j>=0)
+                previous[j].count += 1;
+            else
+                previous.push({message:obj.message, type:obj.type, 'count':1});
+            return previous;
+        }, []);
+        this.buildReportItems(divReportPage,result);
     },
     hide: function () {
         const divReportPage = document.getElementById(this.idReportPageDiv);
