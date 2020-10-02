@@ -13,6 +13,8 @@ const uploadProcesor = {
     idFacility: 'theFacilityid',
     idPeriod: 'thePeriod',
 
+    uploadid: '---',
+
     fileBinary: null,
     // dataToPost: null,
     // partBoundaryCode: 'hackathon2020',
@@ -50,8 +52,8 @@ const uploadProcesor = {
         } );
         xhr.addEventListener("readystatechange", function() {
             if(this.readyState === 4) {
-                console.log(this.responseText);
-                // const json = JSON.parse(xhr.responseText);
+                const json = JSON.parse(xhr.responseText);
+                self.uploadid = json.uploadid;
             }
         });
         xhr.open( 'POST', this.urlImport );
@@ -130,7 +132,7 @@ const progressPageProcesor = {
 
     onSucsses: null,
 
-    fakeProgressAnimTime: 2000,
+    fakeProgressAnimTime: 4000,
     idProgressPageDiv: 'progress-page',
     idProgresElement: 'procesProgres',
     progress: 0,
@@ -203,22 +205,36 @@ const reportPageProcesor = {
                     (item.type=='error'?'red':'yellow'),
                     item.message+': <span class="count">'+item.count+'</span>') 
             );
-            
-            });
+        });
+        divReportTable.append( 
+            nn('div','',
+                '<div class="alert alert-dark text-center" role="alert">'
+                +'<a class="h4" href="https://localhost:44373/download/VCL_TRexDataEditor.exe">Open Data Live Editor</a>'
+                +'<div>'+uploadProcesor.uploadid+'</div>'
+                +'</div>')
+        );
+
     },
     show: function () {
+        const self = this;
+        fetch('https://localhost:44373/results?uploadid='+uploadProcesor.uploadid)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data);
+            var result = data.reduce(function (previous, obj, idx) {
+                const j = previous.findIndex((o2)=>(o2.message==obj.message));
+                if (j>=0)
+                    previous[j].count += 1;
+                else
+                    previous.push({message:obj.message, type:obj.type, 'count':1});
+                return previous;
+            }, []);
+            self.buildReportItems(divReportPage,result);
+        });
         const divReportPage = document.getElementById(this.idReportPageDiv);
         divReportPage.style.display = 'block';
-        const data = testReportData;
-        var result = data.reduce(function (previous, obj, idx) {
-            const j = previous.findIndex((o2)=>(o2.message==obj.message));
-            if (j>=0)
-                previous[j].count += 1;
-            else
-                previous.push({message:obj.message, type:obj.type, 'count':1});
-            return previous;
-        }, []);
-        this.buildReportItems(divReportPage,result);
     },
     hide: function () {
         const divReportPage = document.getElementById(this.idReportPageDiv);

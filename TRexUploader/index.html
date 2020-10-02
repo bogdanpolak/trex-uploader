@@ -28,10 +28,6 @@
       <p class="lead text-center">
         Data validation results:
       </p>
-      <div class="alert alert-dark text-center" role="alert">
-        <a class="h4" href="#">Open Data Live Editor</a>
-        <div>#token#</div>
-      </div>
     </div>
 
     <div class="container" id="progress-page">
@@ -113,15 +109,15 @@
       reportPageProcesor.hide();
 
       uploadProcesor.onSucsses = () => {
-        alert( 'Yeah! Data sent and response loaded.' );
+        // alert( 'Yeah! Data sent and response loaded.' );
         uploadProcesor.hide();
         progressPageProcesor.show();
       }
       // ----- TODO: Remove switching page onFailure -------
       uploadProcesor.onFailure = () => {
         alert( 'Oops! Something went wrong.' );
-        uploadProcesor.hide();
-        progressPageProcesor.show();
+        // uploadProcesor.hide();
+        // progressPageProcesor.show();
       }
       // ----------------------------------------------------
       progressPageProcesor.onSucsses = () => {
