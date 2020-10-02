@@ -39,7 +39,7 @@ const testReportData = [
         message: "NDC with a prefix",
         row: 9,
         column: 5
-    /* Extra data to bump counters */
+    /*
     },{
         type: "error",
         message: "NDC cannot be empty",
@@ -96,5 +96,6 @@ const testReportData = [
         row: 55,
         column: 5
     }
+    */
 ];
 
