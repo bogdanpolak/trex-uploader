@@ -165,13 +165,41 @@ const progressPageProcesor = {
 // Progress page
 // ------------------------------------------------------------
 
+/* 
+var cars = [{ make: 'audi', model: 'r8', year: '2012' }, { make: 'audi', model: 'rs5', year: '2013' }, { make: 'ford', model: 'mustang', year: '2012' }, { make: 'ford', model: 'fusion', year: '2015' }, { make: 'kia', model: 'optima', year: '2012' }]
+cars.reduce(function (previous, obj, idx) {
+        previous[obj.make] = previous[obj.make] || [];
+        previous[obj.make].push(obj);
+        return previous;
+    }, Object.create(null));
+*/
+
+function nn(node, tagName, text) {
+    var newNode = document.createElement('div');
+    node.append(newNode);
+
+}
+
 const reportPageProcesor = {
     
     idReportPageDiv: 'report-page',
+
+    /*
+    buildReportItems: function(divReportPage) {
+        var divReportTable = document.createElement('div');
+        divReportTable.classList.add("report-table");
+        divReportPage.append(divReportTable);
     
+        data.forEach( (reportItem, index) => {
+            this.insertItem(reportItem)
+        });
+    },
+    */
     show: function () {
         const divReportPage = document.getElementById(this.idReportPageDiv);
         divReportPage.style.display = 'block';
+        const data = testReportData;
+        // this.buildReportItems(divReportPage);
     },
     hide: function () {
         const divReportPage = document.getElementById(this.idReportPageDiv);
