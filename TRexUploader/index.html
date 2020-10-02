@@ -23,6 +23,31 @@
       </div>
     </div>
 
+    <div class="container" id="report-page">
+      <p class="lead text-center">
+        TRex report page
+      </p>
+      <p class="lead text-center">
+        empty placeholder ... (under construction)
+      </p>
+    </div>
+
+    <div class="container" id="progress-page">
+      <p class="lead text-center">
+        TRex Service is processing and valdating data. Please wait ...
+      </p>
+      <div class="progress">
+        <div id="procesProgres"
+          class="progress-bar progress-bar-striped"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          style="width: 0; height: 50px;"
+        ></div>
+      </div>
+    </div>
+
     <div class="container" id="import-page">
       <form id="data-upload">
         <div class="form-group">
@@ -79,7 +104,30 @@
   ></script>
   <script>
     window.addEventListener("load", function () {
+
       uploadProcesor.urlImport = "http://localhost:3000/import";
+
+      progressPageProcesor.hide();
+      reportPageProcesor.hide();
+
+      uploadProcesor.onSucsses = () => {
+        alert( 'Yeah! Data sent and response loaded.' );
+        uploadProcesor.hide();
+        progressPageProcesor.show();
+      }
+      // ----- TODO: Remove switching page onFailure -------
+      uploadProcesor.onFailure = () => {
+        alert( 'Oops! Something went wrong.' );
+        uploadProcesor.hide();
+        progressPageProcesor.show();
+      }
+      // ----------------------------------------------------
+      progressPageProcesor.onSucsses = () => {
+        setTimeout(() => { 
+          progressPageProcesor.hide();
+          reportPageProcesor.show();
+        }, 800);
+      }
       uploadProcesor.init();
     });
   </script>

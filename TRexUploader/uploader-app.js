@@ -1,10 +1,14 @@
 // ------------------------------------------------------------
-// Upload form
+// Upload form page
 // ------------------------------------------------------------
 
 const uploadProcesor = {
 
     urlImport: 'unknown',
+    onSucsses: null,
+    onFailure: null,
+
+    idDivUploadPage: 'import-page',
     idFileInput: "theFile",
     idFacility: 'theFacilityid',
     idPeriod: 'thePeriod',
@@ -34,11 +38,12 @@ const uploadProcesor = {
     },
     sendUploadFormData: function (data) {
         const XHR = new XMLHttpRequest();
+        const self = this;
         XHR.addEventListener( 'load', function( event ) {
-            alert( 'Yeah! Data sent and response loaded.' );
+            if (self.onSucsses) self.onSucsses();
         } );
         XHR.addEventListener( 'error', function( event ) {
-            alert( 'Oops! Something went wrong.' );
+            if (self.onFailure) self.onFailure();
         } );
         XHR.open( 'POST', this.urlImport );
         XHR.setRequestHeader( 'Content-Type','multipart/form-data;'
@@ -62,10 +67,11 @@ const uploadProcesor = {
         this.sendUploadFormData();
     },
     init: function (){
-        const fileInput = document.getElementById(uploadProcesor.idFileInput)
+        const fileInput = document.getElementById(this.idFileInput)
         const reader = new FileReader();
+        const self = this;
         reader.addEventListener( "load", function () {
-            uploadProcesor.fileBinary = reader.result;
+            self.fileBinary = reader.result;
         } );
         // At page load, if a file is already selected, read it.
         if( fileInput.files[0] ) {
@@ -80,19 +86,81 @@ const uploadProcesor = {
         } );
         function sendImportRequest(){
             // wait to load file content
-            if( !uploadProcesor.fileBinary && fileInput.files.length > 0 ) {
+            if( !self.fileBinary && fileInput.files.length > 0 ) {
                 setTimeout( sendImportRequest, 30 );
                 return;
             }
-            uploadProcesor.onSubmitFormAndWhenFileIsReady();
+            self.onSubmitFormAndWhenFileIsReady();
         }
         const form = document.getElementById( "data-upload" );
         form.addEventListener( 'submit', function ( event ) {
             event.preventDefault();
             sendImportRequest();
         } );
+    },
+    hide: function() {
+        const divUploadFormPage = document.getElementById(this.idDivUploadPage);
+        divUploadFormPage.style.display = 'none';
     }
 }
 
+// ------------------------------------------------------------
+// Progress page
+// ------------------------------------------------------------
+
+const progressPageProcesor = {
+
+    onSucsses: null,
+
+    fakeProgressAnimTime: 2000,
+    idProgressPageDiv: 'progress-page',
+    idProgresElement: 'procesProgres',
+    progress: 0,
+    timerID: null,
+
+    updateProgress: function () {
+        this.progress += 1;
+        const divProgres = document.getElementById(this.idProgresElement);
+        divProgres.style.width = this.progress+'%';
+        divProgres.setAttribute("aria-valuenow",this.progress);
+    },
+    animateProgress: function () {
+        let self = this;
+        const timerID = setInterval( function(){
+            if (self.progress === 100) {
+                clearTimeout(timerID);
+                if (self.onSucsses) self.onSucsses();
+            };
+            self.updateProgress();
+        }, this.fakeProgressAnimTime/100 );
+    },
+    show: function () {
+        divProgressPage = document.getElementById(this.idProgressPageDiv);
+        divProgressPage.style.display = 'block';
+        this.animateProgress();
+    },
+    hide: function () {
+        divProgressPage = document.getElementById(this.idProgressPageDiv);
+        divProgressPage.style.display = 'none';
+    }
+}
+
+// ------------------------------------------------------------
+// Progress page
+// ------------------------------------------------------------
+
+const reportPageProcesor = {
+    
+    idReportPageDiv: 'report-page',
+    
+    show: function () {
+        const divReportPage = document.getElementById(this.idReportPageDiv);
+        divReportPage.style.display = 'block';
+    },
+    hide: function () {
+        const divReportPage = document.getElementById(this.idReportPageDiv);
+        divReportPage.style.display = 'none';
+    }
+}
 
 // ------------------------------------------------------------

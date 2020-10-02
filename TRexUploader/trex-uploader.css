@@ -1,0 +1,4 @@
+.progress {
+    height: 30px; /* needs to be an absolute measurement unless one of it's parent has an absolute height */
+}
+  
