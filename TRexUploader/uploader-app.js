@@ -15,7 +15,7 @@ const uploadProcesor = {
 
     fileBinary: null,
     // dataToPost: null,
-    partBoundaryCode: 'hackathon2020',
+    // partBoundaryCode: 'hackathon2020',
 
     /*
     addTextPart: function (name, value) {
@@ -53,8 +53,10 @@ const uploadProcesor = {
                 console.log(this.responseText);
         });
         xhr.open( 'POST', this.urlImport );
+        /*
         xhr.setRequestHeader( 'Content-Type','multipart/form-data;'
             +' boundary='+ this.partBoundaryCode );
+        */
         xhr.send( data );
     },
     onSubmitFormAndWhenFileIsReady: function () {
