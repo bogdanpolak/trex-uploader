@@ -2,7 +2,7 @@
 // Upload form page
 // ------------------------------------------------------------
 
-const uploadProcesor = {
+const uploadPageProcesor = {
 
     urlImport: 'unknown',
     onSucsses: null,
@@ -193,8 +193,10 @@ function nn(tagName, tagClassName, text) {
 const reportPageProcesor = {
 
     urlGetResults: '----',
+    uploadId: '----', 
     idReportPageDiv: 'report-page',
     cssReportTable: 'report-table',
+    urlEditorDownloadLink = 'https://localhost:44373/download/VCL_TRexDataEditor.exe',
 
     buildReportItems: function(divReportPage,resultData) {
         var divReportTable = document.createElement('div');
@@ -208,10 +210,11 @@ const reportPageProcesor = {
             );
         });
         divReportTable.append( 
+            // TODO: Convert nn to recursive and accept array on items
             nn('div','',
                 '<div class="alert alert-dark text-center" role="alert">'
-                +'<a class="h4" href="https://localhost:44373/download/VCL_TRexDataEditor.exe">Open Data Live Editor</a>'
-                +'<div>'+uploadProcesor.uploadid+'</div>'
+                +'<a class="h4" href="'+this.urlEditorDownloadLink+'">Open Data Live Editor</a>'
+                +'<div>'+this.uploadId+'</div>'
                 +'</div>')
         );
 

@@ -103,31 +103,27 @@
   <script>
     window.addEventListener("load", function () {
 
-      uploadProcesor.urlImport = "https://localhost:44373/import";
+      uploadPageProcesor.urlImport = "https://localhost:44373/import";
       reportPageProcesor.urlGetResults='https://localhost:44373/results?uploadid={0}';
 
       progressPageProcesor.hide();
       reportPageProcesor.hide();
 
-      uploadProcesor.onSucsses = () => {
-        // alert( 'Yeah! Data sent and response loaded.' );
-        uploadProcesor.hide();
+      uploadPageProcesor.onSucsses = () => {
+        progressPageProcesor.uploadId=uploadPageProcesor.uploadid;
+        uploadPageProcesor.hide();
         progressPageProcesor.show();
       }
-      // ----- TODO: Remove switching page onFailure -------
-      uploadProcesor.onFailure = () => {
+      uploadPageProcesor.onFailure = () => {
         alert( 'Oops! Something went wrong.' );
-        // uploadProcesor.hide();
-        // progressPageProcesor.show();
       }
-      // ----------------------------------------------------
       progressPageProcesor.onSucsses = () => {
         setTimeout(() => { 
           progressPageProcesor.hide();
           reportPageProcesor.show();
         }, 800);
       }
-      uploadProcesor.init();
+      uploadPageProcesor.init();
     });
   </script>
 </html>
