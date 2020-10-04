@@ -104,6 +104,7 @@
     window.addEventListener("load", function () {
 
       uploadProcesor.urlImport = "https://localhost:44373/import";
+      reportPageProcesor.urlGetResults='https://localhost:44373/results?uploadid={0}';
 
       progressPageProcesor.hide();
       reportPageProcesor.hide();

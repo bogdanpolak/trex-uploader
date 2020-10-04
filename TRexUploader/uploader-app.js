@@ -191,7 +191,8 @@ function nn(tagName, tagClassName, text) {
 }
 
 const reportPageProcesor = {
-    
+
+    urlGetResults: '----',
     idReportPageDiv: 'report-page',
     cssReportTable: 'report-table',
 
@@ -217,7 +218,7 @@ const reportPageProcesor = {
     },
     show: function () {
         const self = this;
-        fetch('https://localhost:44373/results?uploadid='+uploadProcesor.uploadid)
+        fetch(this.urlGetResults.formatUnicorn(this.uploadId))
         .then(function (response) {
             return response.json();
         })
@@ -241,5 +242,28 @@ const reportPageProcesor = {
         divReportPage.style.display = 'none';
     }
 }
+
+// ------------------------------------------------------------
+// polyfills and extensions 
+// ------------------------------------------------------------
+
+String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
+function () {
+    "use strict";
+    var str = this.toString();
+    if (arguments.length) {
+        var t = typeof arguments[0];
+        var key;
+        var args = ("string" === t || "number" === t) ?
+            Array.prototype.slice.call(arguments)
+            : arguments[0];
+
+        for (key in args) {
+            str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+        }
+    }
+
+    return str;
+};
 
 // ------------------------------------------------------------
