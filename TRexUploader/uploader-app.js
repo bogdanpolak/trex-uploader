@@ -81,9 +81,9 @@ const uploadPageProcesor = {
         */
         var data = new FormData();
         data.append('token', '00000-11111-22222');
+        data.append(facilitySel.name, facilitySel.value);
+        data.append(periodSel.name, periodSel.value);
         data.append('file', fileInput.files[0], fileInput.files[0].name);
-        data.append('facilityid', facilitySel.value);
-        data.append('period', periodSel.value);
         this.sendUploadFormData(data);
     },
     init: function (){
@@ -112,11 +112,10 @@ const uploadPageProcesor = {
             }
             self.onSubmitFormAndWhenFileIsReady();
         }
-        const form = document.getElementById( "data-upload" );
         form.addEventListener( 'submit', function ( event ) {
             event.preventDefault();
-            sendImportRequest();
-        } );
+            this.onSubmitFormAndWhenFileIsReady();
+        } ).bind(this);
     },
     hide: function() {
         const divUploadFormPage = document.getElementById(this.idDivUploadPage);
