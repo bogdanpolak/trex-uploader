@@ -10,13 +10,12 @@ const uploadPageProcesor = {
     urlImport: 'unknown',
     onSucsses: null,
     onFailure: null,
+    uploadid: '---',
 
     idDivUploadPage: 'import-page',
     idFileInput: "theFile",
     idFacility: 'theFacilityid',
     idPeriod: 'thePeriod',
-
-    uploadid: '---',
 
     sendUploadFormData: function (data) {
         const xhr = new XMLHttpRequest();
@@ -75,6 +74,7 @@ const uploadPageProcesor = {
 const progressPageProcesor = {
 
     onSucsses: null,
+    uploadid: '---',
 
     fakeProgressAnimTime: 4000,
     idProgressPageDiv: 'progress-page',
