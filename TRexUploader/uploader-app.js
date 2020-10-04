@@ -53,6 +53,9 @@ const uploadPageProcesor = {
         this.sendUploadFormData(data);
     },
     init: function (){
+        const divUploadFormPage = document.getElementById(this.idDivUploadPage);
+        const formArray = divUploadFormPage.getElementsByTagName('form');
+        const form = formArray.length && formArray[0];
         form.addEventListener( 'submit', function ( event ) {
             event.preventDefault();
             this.onSubmitFormAndWhenFileIsReady();
@@ -124,7 +127,7 @@ const reportPageProcesor = {
     uploadId: '----', 
     idReportPageDiv: 'report-page',
     cssReportTable: 'report-table',
-    urlEditorDownloadLink = 'https://localhost:44373/download/VCL_TRexDataEditor.exe',
+    urlEditorDownloadLink: 'https://localhost:44373/download/VCL_TRexDataEditor.exe',
 
     buildReportItems: function(divReportPage,resultData) {
         var divReportTable = document.createElement('div');
