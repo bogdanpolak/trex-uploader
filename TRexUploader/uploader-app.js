@@ -1,6 +1,9 @@
 // ------------------------------------------------------------
 // Upload form page
 // ------------------------------------------------------------
+// Article to read:
+// Uploading Images In A Pure JSON API
+// https://dotnetcoretutorials.com/2018/07/21/uploading-images-in-a-pure-json-api/
 
 const uploadPageProcesor = {
 
@@ -79,6 +82,10 @@ const uploadPageProcesor = {
             + this.fileBinary + '\r\n';
             + "--" + this.partBoundaryCode + "--";
         */
+        // TODO: Migrate XMLHttpRequest => FetchAPI 
+        // const form = new FormData(document.getElementById('login-form'));
+        // fetch('/login', {method: 'POST', body: form });
+        // if (window.fetch) { OK } else { polyfill }
         var data = new FormData();
         data.append('token', '00000-11111-22222');
         data.append(facilitySel.name, facilitySel.value);
