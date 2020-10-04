@@ -1,8 +1,11 @@
 // ------------------------------------------------------------
 // Upload form page
 // ------------------------------------------------------------
+// Article to read:
+// Uploading Images In A Pure JSON API
+// https://dotnetcoretutorials.com/2018/07/21/uploading-images-in-a-pure-json-api/
 
-const uploadProcesor = {
+const uploadPageProcesor = {
 
     urlImport: 'unknown',
     onSucsses: null,
@@ -15,31 +18,6 @@ const uploadProcesor = {
 
     uploadid: '---',
 
-    fileBinary: null,
-    // dataToPost: null,
-    // partBoundaryCode: 'hackathon2020',
-
-    /*
-    addTextPart: function (name, value) {
-        data = "--" + this.partBoundaryCode + "\r\n";
-        data += 'content-disposition: form-data; name="' + name + '"\r\n';
-        data += '\r\n';
-        data += value + "\r\n";
-        return data;
-    },
-    addBinaryPart: function(fileInput){
-        let data = "";
-        if ( fileInput.files[0] ) {
-            data += "--" + this.partBoundaryCode + "\r\n";
-            data += 'content-disposition: form-data; '
-                    + 'name="'         + fileInput.name          + '"; '
-                    + 'filename="'     + fileInput.files[0].name + '"\r\n';
-            data += 'Content-Type: ' + fileInput.files[0].type + '\r\n';
-            data += '\r\n';
-        }
-        return data;
-    },
-    */
     sendUploadFormData: function (data) {
         const xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
@@ -57,66 +35,28 @@ const uploadProcesor = {
             }
         });
         xhr.open( 'POST', this.urlImport );
-        /*
-        xhr.setRequestHeader( 'Content-Type','multipart/form-data;'
-            +' boundary='+ this.partBoundaryCode );
-        */
         xhr.send( data );
     },
     onSubmitFormAndWhenFileIsReady: function () {
         const facilitySel = document.getElementById( this.idFacility );
         const periodSel = document.getElementById( this.idPeriod );
         const fileInput = document.getElementById( this.idFileInput );
-        /*
-        const partToken = this.addTextPart('token', '00000-11111-22222');
-        const partFacility = this.addTextPart(facilitySel.name, facilitySel.value);
-        const partPeriod = this.addTextPart(periodSel.name, periodSel.value);
-        const headerFile = this.addBinaryPart(fileInput)
-        this.dataToPost = partToken 
-            + partFacility 
-            + partPeriod 
-            + headerFile 
-            + this.fileBinary + '\r\n';
-            + "--" + this.partBoundaryCode + "--";
-        */
+        // TODO: Migrate XMLHttpRequest => FetchAPI 
+        // const form = new FormData(document.getElementById('login-form'));
+        // fetch('/login', {method: 'POST', body: form });
+        // if (window.fetch) { OK } else { polyfill }
         var data = new FormData();
         data.append('token', '00000-11111-22222');
+        data.append(facilitySel.name, facilitySel.value);
+        data.append(periodSel.name, periodSel.value);
         data.append('file', fileInput.files[0], fileInput.files[0].name);
-        data.append('facilityid', facilitySel.value);
-        data.append('period', periodSel.value);
         this.sendUploadFormData(data);
     },
     init: function (){
-        const fileInput = document.getElementById(this.idFileInput)
-        const reader = new FileReader();
-        const self = this;
-        reader.addEventListener( "load", function () {
-            self.fileBinary = reader.result;
-        } );
-        // At page load, if a file is already selected, read it.
-        if( fileInput.files[0] ) {
-            reader.readAsBinaryString( fileInput.files[0] );
-        }
-        // If not, read the file once the user selects it.
-        fileInput.addEventListener( "change", function () {
-            if( reader.readyState === FileReader.LOADING ) {
-                reader.abort();
-            }
-            reader.readAsBinaryString( fileInput.files[0] );
-        } );
-        function sendImportRequest(){
-            // wait to load file content
-            if( !self.fileBinary && fileInput.files.length > 0 ) {
-                setTimeout( sendImportRequest, 30 );
-                return;
-            }
-            self.onSubmitFormAndWhenFileIsReady();
-        }
-        const form = document.getElementById( "data-upload" );
         form.addEventListener( 'submit', function ( event ) {
             event.preventDefault();
-            sendImportRequest();
-        } );
+            this.onSubmitFormAndWhenFileIsReady();
+        } ).bind(this);
     },
     hide: function() {
         const divUploadFormPage = document.getElementById(this.idDivUploadPage);
@@ -169,18 +109,6 @@ const progressPageProcesor = {
 // Report page
 // ------------------------------------------------------------
 
-/*
-https://gomakethings.com/how-to-use-the-fetch-api-with-vanilla-js/
-
-fetch('https://jsonplaceholder.typicode.com/posts')
-	.then(function (response) {
-		return response.json();
-	})
-	.then(function (data) {
-		console.log(data);
-    });
-*/
-
 function nn(tagName, tagClassName, text) {
     var newNode = document.createElement(tagName);
     if (tagClassName) {
@@ -191,9 +119,12 @@ function nn(tagName, tagClassName, text) {
 }
 
 const reportPageProcesor = {
-    
+
+    urlGetResults: '----',
+    uploadId: '----', 
     idReportPageDiv: 'report-page',
     cssReportTable: 'report-table',
+    urlEditorDownloadLink = 'https://localhost:44373/download/VCL_TRexDataEditor.exe',
 
     buildReportItems: function(divReportPage,resultData) {
         var divReportTable = document.createElement('div');
@@ -207,17 +138,18 @@ const reportPageProcesor = {
             );
         });
         divReportTable.append( 
+            // TODO: Convert nn to recursive and accept array on items
             nn('div','',
                 '<div class="alert alert-dark text-center" role="alert">'
-                +'<a class="h4" href="https://localhost:44373/download/VCL_TRexDataEditor.exe">Open Data Live Editor</a>'
-                +'<div>'+uploadProcesor.uploadid+'</div>'
+                +'<a class="h4" href="'+this.urlEditorDownloadLink+'">Open Data Live Editor</a>'
+                +'<div>'+this.uploadId+'</div>'
                 +'</div>')
         );
 
     },
     show: function () {
         const self = this;
-        fetch('https://localhost:44373/results?uploadid='+uploadProcesor.uploadid)
+        fetch(this.urlGetResults.formatUnicorn(this.uploadId))
         .then(function (response) {
             return response.json();
         })
@@ -241,5 +173,28 @@ const reportPageProcesor = {
         divReportPage.style.display = 'none';
     }
 }
+
+// ------------------------------------------------------------
+// polyfills and extensions 
+// ------------------------------------------------------------
+
+String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
+function () {
+    "use strict";
+    var str = this.toString();
+    if (arguments.length) {
+        var t = typeof arguments[0];
+        var key;
+        var args = ("string" === t || "number" === t) ?
+            Array.prototype.slice.call(arguments)
+            : arguments[0];
+
+        for (key in args) {
+            str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+        }
+    }
+
+    return str;
+};
 
 // ------------------------------------------------------------
