@@ -18,31 +18,6 @@ const uploadPageProcesor = {
 
     uploadid: '---',
 
-    fileBinary: null,
-    // dataToPost: null,
-    // partBoundaryCode: 'hackathon2020',
-
-    /*
-    addTextPart: function (name, value) {
-        data = "--" + this.partBoundaryCode + "\r\n";
-        data += 'content-disposition: form-data; name="' + name + '"\r\n';
-        data += '\r\n';
-        data += value + "\r\n";
-        return data;
-    },
-    addBinaryPart: function(fileInput){
-        let data = "";
-        if ( fileInput.files[0] ) {
-            data += "--" + this.partBoundaryCode + "\r\n";
-            data += 'content-disposition: form-data; '
-                    + 'name="'         + fileInput.name          + '"; '
-                    + 'filename="'     + fileInput.files[0].name + '"\r\n';
-            data += 'Content-Type: ' + fileInput.files[0].type + '\r\n';
-            data += '\r\n';
-        }
-        return data;
-    },
-    */
     sendUploadFormData: function (data) {
         const xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
@@ -60,28 +35,12 @@ const uploadPageProcesor = {
             }
         });
         xhr.open( 'POST', this.urlImport );
-        /*
-        xhr.setRequestHeader( 'Content-Type','multipart/form-data;'
-            +' boundary='+ this.partBoundaryCode );
-        */
         xhr.send( data );
     },
     onSubmitFormAndWhenFileIsReady: function () {
         const facilitySel = document.getElementById( this.idFacility );
         const periodSel = document.getElementById( this.idPeriod );
         const fileInput = document.getElementById( this.idFileInput );
-        /*
-        const partToken = this.addTextPart('token', '00000-11111-22222');
-        const partFacility = this.addTextPart(facilitySel.name, facilitySel.value);
-        const partPeriod = this.addTextPart(periodSel.name, periodSel.value);
-        const headerFile = this.addBinaryPart(fileInput)
-        this.dataToPost = partToken 
-            + partFacility 
-            + partPeriod 
-            + headerFile 
-            + this.fileBinary + '\r\n';
-            + "--" + this.partBoundaryCode + "--";
-        */
         // TODO: Migrate XMLHttpRequest => FetchAPI 
         // const form = new FormData(document.getElementById('login-form'));
         // fetch('/login', {method: 'POST', body: form });
@@ -94,31 +53,6 @@ const uploadPageProcesor = {
         this.sendUploadFormData(data);
     },
     init: function (){
-        const fileInput = document.getElementById(this.idFileInput)
-        const reader = new FileReader();
-        const self = this;
-        reader.addEventListener( "load", function () {
-            self.fileBinary = reader.result;
-        } );
-        // At page load, if a file is already selected, read it.
-        if( fileInput.files[0] ) {
-            reader.readAsBinaryString( fileInput.files[0] );
-        }
-        // If not, read the file once the user selects it.
-        fileInput.addEventListener( "change", function () {
-            if( reader.readyState === FileReader.LOADING ) {
-                reader.abort();
-            }
-            reader.readAsBinaryString( fileInput.files[0] );
-        } );
-        function sendImportRequest(){
-            // wait to load file content
-            if( !self.fileBinary && fileInput.files.length > 0 ) {
-                setTimeout( sendImportRequest, 30 );
-                return;
-            }
-            self.onSubmitFormAndWhenFileIsReady();
-        }
         form.addEventListener( 'submit', function ( event ) {
             event.preventDefault();
             this.onSubmitFormAndWhenFileIsReady();
@@ -174,18 +108,6 @@ const progressPageProcesor = {
 // ------------------------------------------------------------
 // Report page
 // ------------------------------------------------------------
-
-/*
-https://gomakethings.com/how-to-use-the-fetch-api-with-vanilla-js/
-
-fetch('https://jsonplaceholder.typicode.com/posts')
-	.then(function (response) {
-		return response.json();
-	})
-	.then(function (data) {
-		console.log(data);
-    });
-*/
 
 function nn(tagName, tagClassName, text) {
     var newNode = document.createElement(tagName);
