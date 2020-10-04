@@ -56,10 +56,11 @@ const uploadPageProcesor = {
         const divUploadFormPage = document.getElementById(this.idDivUploadPage);
         const formArray = divUploadFormPage.getElementsByTagName('form');
         const form = formArray.length && formArray[0];
+        const self = this;
         form.addEventListener( 'submit', function ( event ) {
             event.preventDefault();
-            this.onSubmitFormAndWhenFileIsReady();
-        } ).bind(this);
+            self.onSubmitFormAndWhenFileIsReady();
+        } );
     },
     hide: function() {
         const divUploadFormPage = document.getElementById(this.idDivUploadPage);
