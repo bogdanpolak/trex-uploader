@@ -1,6 +1,9 @@
-var express = require('express');
-var fs = require('fs');
-var bodyParser = require('body-parser');
+const express = require('express');
+const fs = require('fs');
+const multer = require('multer');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const upload = multer({ dest: 'uploads/' });
 
 const ServerRunner = {
     dbFileName: 'db.json',
@@ -34,17 +37,27 @@ const ServerRunner = {
         res.json(this.database.results);
         console.log("[HTTP] GET /results");
     },
+    handleFormPostRequest: function (req, res) {
+        console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
+        console.log(req.method + ' ' + req.url);
+        console.log(req.body);
+        // res.json({uploadid: "aaaaaaaaaaa"});
+        es.json(this.database.results[0]);
+    },
     start: function () {
         const self = this;
         const dbFileName = this.dbFileName;
         const app = this.app;
         const port = this.port;
         app.use(bodyParser.json()); // support json encoded bodies
-        app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+        app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
+        app.use(cors());
         self.loadDatabase(dbFileName)
             .then( () => self.startHttpServer(app, port) )
             .then( (app) => {
-                app.get('/results', (req, res) => self.appGetResults(req, res));   
+                app.get('/results', (req, res) => self.appGetResults(req, res));
+                app.post('/import', // upload.any(), 
+                    (req, res) => self.handleFormPostRequest(req, res));
             } )
         ;
     }
