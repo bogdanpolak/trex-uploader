@@ -31,16 +31,12 @@ const ServerRunner = {
         });
     },
     appGetResults: function (req, res) {
-        // res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' })
         res.json(this.database.results);
         console.log("[HTTP] GET /results");
     },
-    handleFormPostRequest: function (req, res) {
-        console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
-        console.log(req.method + ' ' + req.url);
-        console.log(req.body);
-        res.json({uploadid: "aaaaaaaaaaa"});
-        // res.json(this.database.results[0]);
+    appPostImport: function (req, res) {
+        console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
+        res.json({uploadid: "f778c3e4-33b3-44fb-76b2-08d866c9db60"});
     },
     start: function () {
         const self = this;
@@ -53,9 +49,10 @@ const ServerRunner = {
         self.loadDatabase(dbFileName)
             .then( () => self.startHttpServer(app, port) )
             .then( (app) => {
-                app.get('/results', (req, res) => self.appGetResults(req, res));
+                app.get('/results', 
+                    (req, res) => self.appGetResults(req, res));
                 app.post('/import',
-                    (req, res) => self.handleFormPostRequest(req, res));
+                    (req, res) => self.appPostImport(req, res));
             } )
         ;
     }
