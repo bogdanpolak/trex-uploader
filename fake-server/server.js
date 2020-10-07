@@ -1,9 +1,7 @@
 const express = require('express');
 const fs = require('fs');
-const multer = require('multer');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const upload = multer({ dest: 'uploads/' });
 
 const ServerRunner = {
     dbFileName: 'db.json',
@@ -56,7 +54,7 @@ const ServerRunner = {
             .then( () => self.startHttpServer(app, port) )
             .then( (app) => {
                 app.get('/results', (req, res) => self.appGetResults(req, res));
-                app.post('/import', // upload.any(), 
+                app.post('/import',
                     (req, res) => self.handleFormPostRequest(req, res));
             } )
         ;
