@@ -4,6 +4,10 @@
 // Article to read:
 // Uploading Images In A Pure JSON API
 // https://dotnetcoretutorials.com/2018/07/21/uploading-images-in-a-pure-json-api/
+// JQuery drag&drop with progress:
+// https://www.jqueryscript.net/form/Drag-Drop-File-Upload-Plugin-For-Bootstrap-dropzone.html
+// Drag and Drop File Uploading (no JQuery dependency):
+// https://css-tricks.com/drag-and-drop-file-uploading/
 
 const uploadPageProcesor = {
 
@@ -164,7 +168,7 @@ const reportPageProcesor = {
                 if (j>=0)
                     previous[j].count += 1;
                 else
-                    previous.push({message:obj.message, type:obj.type, 'count':1});
+                    previous.push({"message":obj.message, "type":obj.type, 'count':1});
                 return previous;
             }, []);
             self.buildReportItems(divReportPage,result);
