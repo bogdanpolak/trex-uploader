@@ -41,8 +41,8 @@ const ServerRunner = {
         console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
         console.log(req.method + ' ' + req.url);
         console.log(req.body);
-        // res.json({uploadid: "aaaaaaaaaaa"});
-        es.json(this.database.results[0]);
+        res.json({uploadid: "aaaaaaaaaaa"});
+        // res.json(this.database.results[0]);
     },
     start: function () {
         const self = this;
