@@ -43,8 +43,10 @@ const ServerRunner = {
         const dbFileName = this.dbFileName;
         const app = this.app;
         const port = this.port;
-        app.use(bodyParser.json()); // support json encoded bodies
-        app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
+        // support json encoded bodies
+        // no support for extended encoded bodies (eg. MIME)
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: false })); 
         app.use(cors());
         self.loadDatabase(dbFileName)
             .then( () => self.startHttpServer(app, port) )
