@@ -15,6 +15,7 @@ const uploadPageProcesor = {
     onSucsses: null,
     onFailure: null,
     uploadid: '---',
+    withCredentials: true,
 
     idDivUploadPage: 'import-page',
     idFileInput: "theFile",
@@ -23,7 +24,7 @@ const uploadPageProcesor = {
 
     sendUploadFormData: function (data) {
         const xhr = new XMLHttpRequest();
-        xhr.withCredentials = true;
+        xhr.withCredentials = this.withCredentials;
         const self = this;
         xhr.addEventListener( 'load', function( event ) {
             if (self.onSucsses) self.onSucsses();
@@ -180,6 +181,40 @@ const reportPageProcesor = {
         const divReportPage = document.getElementById(this.idReportPageDiv);
         divReportPage.style.display = 'none';
     }
+}
+
+// ------------------------------------------------------------
+// App
+// ------------------------------------------------------------
+
+const trexApplication = {
+    start: function (appconfing) {
+        uploadPageProcesor.withCredentials = appconfing.httpWithCredentials;
+        uploadPageProcesor.urlImport = appconfing.urlPostImport;
+        reportPageProcesor.urlGetResults = appconfing.urlGetResults;
+
+        progressPageProcesor.hide();
+        reportPageProcesor.hide();
+  
+        uploadPageProcesor.onSucsses = () => {
+            const uploadid = uploadPageProcesor.uploadid;
+            console.log('uploadid: %s',uploadid);
+            progressPageProcesor.uploadId = uploadid;
+            reportPageProcesor.uploadId = uploadid;
+            uploadPageProcesor.hide();
+            progressPageProcesor.show();
+        }
+        uploadPageProcesor.onFailure = () => {
+            alert( 'Oops! Something went wrong.' );
+        }
+        progressPageProcesor.onSucsses = () => {
+            setTimeout(() => { 
+                progressPageProcesor.hide();
+                reportPageProcesor.show();
+            }, 800);
+        }
+        uploadPageProcesor.init();
+      }
 }
 
 // ------------------------------------------------------------

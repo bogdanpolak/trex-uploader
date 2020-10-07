@@ -14,7 +14,8 @@
       crossorigin="anonymous"
     />
     <link href="trex-uploader.css" rel="stylesheet" />
-    <script src="uploader-app.js?ts=1600"></script>
+    <script src="uploader-app.js?ts=1700"></script>
+    <script src="appconfig.js?ts=1000"></script>
   </head>
   <body>
     <div class="container">
@@ -100,30 +101,6 @@
     crossorigin="anonymous"
   ></script>
   <script>
-    window.addEventListener("load", function () {
-
-      uploadPageProcesor.urlImport = "https://localhost:44373/import";
-      reportPageProcesor.urlGetResults='https://localhost:44373/results?uploadid={0}';
-
-      progressPageProcesor.hide();
-      reportPageProcesor.hide();
-
-      uploadPageProcesor.onSucsses = () => {
-        progressPageProcesor.uploadId=uploadPageProcesor.uploadid;
-        reportPageProcesor.uploadId=uploadPageProcesor.uploadid;
-        uploadPageProcesor.hide();
-        progressPageProcesor.show();
-      }
-      uploadPageProcesor.onFailure = () => {
-        alert( 'Oops! Something went wrong.' );
-      }
-      progressPageProcesor.onSucsses = () => {
-        setTimeout(() => { 
-          progressPageProcesor.hide();
-          reportPageProcesor.show();
-        }, 800);
-      }
-      uploadPageProcesor.init();
-    });
+    window.addEventListener("load", () => trexApplication.start(appConfig) );
   </script>
 </html>
