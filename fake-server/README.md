@@ -1,6 +1,6 @@
 # TRex Fake Server
 
-Install:
+### Setup
 
 * Install NodeJS
 * Open terminal (command prompt):
@@ -9,10 +9,16 @@ cd fake-server
 npm install
 ```
 
-Start server:
+## Start
 
 ```
 cd fake-server
 node server.js
 ```
 
+## Test
+
+To test fake-server:
+
+- Open file `test.http`
+- Press `Send Request` command (**REST Client** extension have to be installed)
