@@ -8,6 +8,7 @@ const ServerRunner = {
     port: 44373,
     database: null,
     app: express(),
+    status: 0,
 
     loadDatabase: function(dbFileName) {
         const self = this;
@@ -36,6 +37,7 @@ const ServerRunner = {
     },
     appPostImport: function (req, res) {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
+        this.status=0;
         res.json({uploadid: "f778c3e4-33b3-44fb-76b2-08d866c9db60"});
     },
     start: function () {
@@ -55,6 +57,10 @@ const ServerRunner = {
                     (req, res) => self.appGetResults(req, res));
                 app.post('/import',
                     (req, res) => self.appPostImport(req, res));
+                app.get('/progress',
+                    (req, res) => {
+                        res.json({status: self.status+=1});
+                    });
             } )
         ;
     }
