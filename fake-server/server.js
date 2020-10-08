@@ -3,11 +3,26 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
+function genUUID() {
+    var UUID= 'xxxxxxx-xxxx-4xxx-yxxx-xzx'.replace(/[xy]/g, 
+        (ch) => {
+            const rand = Math.random() * 16 | 0;
+            const hex = (ch == 'x') ? rand : (rand & 3 | 8);
+            return hex.toString(16);
+        });
+    var str = new Date().getTime().toString(16).slice(1);
+    return UUID.replace(/[z]/, str);
+}
+
 const ServerRunner = {
     dbFileName: 'db.json',
     port: 44373,
     database: null,
     app: express(),
+    status: 0,
 
     loadDatabase: function(dbFileName) {
         const self = this;
@@ -36,7 +51,12 @@ const ServerRunner = {
     },
     appPostImport: function (req, res) {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
-        res.json({uploadid: "f778c3e4-33b3-44fb-76b2-08d866c9db60"});
+        this.status=0;
+        if ((req.body.facilityid) && (req.body.period))
+            res.json({uploadid: genUUID()});
+        else
+            res.json({uploadid: "11111111-33b3-44fb-76b2-08d866c9db60"});
+        
     },
     start: function () {
         const self = this;
@@ -53,8 +73,13 @@ const ServerRunner = {
             .then( (app) => {
                 app.get('/results', 
                     (req, res) => self.appGetResults(req, res));
-                app.post('/import',
-                    (req, res) => self.appPostImport(req, res));
+                // app.post('/profile', upload.single('avatar'), function (req, res, next) {
+                app.post('/import', upload.single('file'),
+                    (req, res, next) => self.appPostImport(req, res));
+                app.get('/progress',
+                    (req, res) => {
+                        res.json({status: self.status+=1});
+                    });
             } )
         ;
     }
