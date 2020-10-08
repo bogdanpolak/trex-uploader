@@ -3,6 +3,9 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
 const ServerRunner = {
     dbFileName: 'db.json',
     port: 44373,
@@ -55,8 +58,9 @@ const ServerRunner = {
             .then( (app) => {
                 app.get('/results', 
                     (req, res) => self.appGetResults(req, res));
-                app.post('/import',
-                    (req, res) => self.appPostImport(req, res));
+                // app.post('/profile', upload.single('avatar'), function (req, res, next) {
+                app.post('/import', upload.single('file'),
+                    (req, res, next) => self.appPostImport(req, res));
                 app.get('/progress',
                     (req, res) => {
                         res.json({status: self.status+=1});
