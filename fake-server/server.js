@@ -1,7 +1,9 @@
 const express = require('express');
 const fs = require('fs');
+const fsp = require('fs').promises;
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const d3 = require("d3-dsv");
 
 var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
@@ -72,14 +74,19 @@ const ServerRunner = {
             .then( () => self.startHttpServer(app, port) )
             .then( (app) => {
                 app.get('/results', 
-                    (req, res) => self.appGetResults(req, res));
-                // app.post('/profile', upload.single('avatar'), function (req, res, next) {
-                app.post('/import', upload.single('file'),
-                    (req, res, next) => self.appPostImport(req, res));
-                app.get('/progress',
-                    (req, res) => {
-                        res.json({status: self.status+=1});
-                    });
+                    (req, res) => self.appGetResults(req, res)
+                );
+                app.post('/import', upload.single('file'), 
+                    (req, res, next) => self.appPostImport(req, res)
+                );
+                app.get('/progress', 
+                    (req, res) => res.json({status: self.status+=1})
+                );
+                app.get('/test-csv', (req, res) => {
+                    fsp.readFile( "../data/AFaclity_Purchase_09_2020.csv", "utf8")
+                        // .then(data => { res.json(d3.csvParse(data)) })
+                        .then( data => { res.json(d3.csvParseRows(data, d3.autoType)) })
+                });
             } )
         ;
     }
