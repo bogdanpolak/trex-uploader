@@ -58,8 +58,8 @@ const ServerRunner = {
         this.status=0;
         if ((req.file) && (req.body.facilityid) && (req.body.period)) {
             const uploadid = genUUID();
-            const procStatus = pharmProcessor.processFile(req.file);
-            res.json({ processor: procStatus,  uploadid: uploadid });
+            setTimeout(() => pharmProcessor.processFile(req.file,uploadid), 0);
+            res.json({uploadid: uploadid });
         }
         else
             res.json({uploadid: "11111111-2222-3333-76b2-08d866c9db60"});

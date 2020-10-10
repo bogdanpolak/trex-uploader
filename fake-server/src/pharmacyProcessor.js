@@ -1,4 +1,4 @@
-function processFile (file) {
+function processFile (file,uploadid) {
     // ---------------------------------------
     // file.destination: 'uploads/'
     // file.originalname = 'AFaclity_Purchase_09_2020.csv'
@@ -9,11 +9,12 @@ function processFile (file) {
     // file.path = 'uploads/cbd35731f7e95e25ff6759da60a2e332'
     // file.size = 559
     // ---------------------------------------
-    return {
+    setTimeout(() => console.log({
+        uploadid: uploadid,
         started: Date(), 
         original: file.destination + file.originalname,
         upload: file.path
-    }
+    }), 3000);
 };
 
 module.exports = {processFile};
