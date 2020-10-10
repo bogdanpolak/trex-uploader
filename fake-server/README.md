@@ -22,3 +22,11 @@ To test fake-server:
 
 - Open file `test.http`
 - Press `Send Request` command (**REST Client** extension have to be installed)
+
+# Node JS packages
+
+```
+npm init
+npm install express multer cors
+npm install d3-dsv
+```
