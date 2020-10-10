@@ -29,4 +29,5 @@ To test fake-server:
 npm init
 npm install express multer cors
 npm install d3-dsv
+npm install --save-dev mocha chai
 ```
