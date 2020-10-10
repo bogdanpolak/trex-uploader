@@ -20,7 +20,7 @@ node server.js
 
 To test fake-server:
 
-- Open file `test.http`
+- Open file `tests\integration-tests.http`
 - Press `Send Request` command (**REST Client** extension have to be installed)
 
 # Node JS packages
