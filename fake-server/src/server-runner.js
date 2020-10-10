@@ -54,15 +54,17 @@ const ServerRunner = {
 }
 
 function startHttpServer(app, port) {
-    const server = app.listen(port, () => console.log(
-        "[OK] Express server started: http://%s:%s",
-        server.address().address, 
-        server.address().port));
+    const server = app.listen(port, () => {
+        const a = server.address();
+        const host = a.address='::' ? 'localhost' : a.address;
+        console.log( "[OK] Server started: http://%s:%s", host, a.port);
+    });
     return server;
 }
 
 function runExpressServer(port) {
     const app = express();
+    app.use(express.static('../TRexUploader'))
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false })); 
     app.use(cors());
