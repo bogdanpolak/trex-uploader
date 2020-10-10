@@ -4,7 +4,6 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const cors = require('cors');
 const multer  = require('multer')
-const d3 = require("d3-dsv");
 const pharmProcessor = require('./src/pharmacyProcessor');
 // add lowdb: https://github.com/typicode/lowdb 
 
@@ -86,11 +85,6 @@ const ServerRunner = {
                 app.get('/progress', 
                     (req, res) => res.json({status: self.status+=1})
                 );
-                app.get('/test-csv', (req, res) => {
-                    fsp.readFile( "../data/AFaclity_Purchase_09_2020.csv", "utf8")
-                        // .then(data => { res.json(d3.csvParse(data)) })
-                        .then( data => { res.json(d3.csvParseRows(data, d3.autoType)) })
-                });
             } )
         ;
     }
