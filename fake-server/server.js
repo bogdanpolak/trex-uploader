@@ -5,6 +5,8 @@ const fsp = require('fs').promises;
 const cors = require('cors');
 const multer  = require('multer')
 const d3 = require("d3-dsv");
+const pharmProcessor = require('./src/pharmacyProcessor');
+// add lowdb: https://github.com/typicode/lowdb 
 
 const multerUpload = multer({ dest: 'uploads/' });
 
@@ -54,11 +56,13 @@ const ServerRunner = {
     appPostImport: function (req, res) {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
         this.status=0;
-        if ((req.body.facilityid) && (req.body.period))
-            res.json({uploadid: genUUID()});
+        if ((req.file) && (req.body.facilityid) && (req.body.period)) {
+            const uploadid = genUUID();
+            const procStatus = pharmProcessor.processFile(req.file);
+            res.json({ processor: procStatus,  uploadid: uploadid });
+        }
         else
-            res.json({uploadid: "11111111-33b3-44fb-76b2-08d866c9db60"});
-        
+            res.json({uploadid: "11111111-2222-3333-76b2-08d866c9db60"});
     },
     start: function () {
         const self = this;
