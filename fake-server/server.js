@@ -1,12 +1,12 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const fs = require('fs');
 const fsp = require('fs').promises;
-const bodyParser = require('body-parser');
 const cors = require('cors');
+const multer  = require('multer')
 const d3 = require("d3-dsv");
 
-var multer  = require('multer')
-var upload = multer({ dest: 'uploads/' })
+const multerUpload = multer({ dest: 'uploads/' });
 
 function genUUID() {
     var UUID= 'xxxxxxx-xxxx-4xxx-yxxx-xzx'.replace(/[xy]/g, 
@@ -76,7 +76,7 @@ const ServerRunner = {
                 app.get('/results', 
                     (req, res) => self.appGetResults(req, res)
                 );
-                app.post('/import', upload.single('file'), 
+                app.post('/import', multerUpload.single('file'), 
                     (req, res, next) => self.appPostImport(req, res)
                 );
                 app.get('/progress', 
