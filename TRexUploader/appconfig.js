@@ -1,8 +1,8 @@
 const appConfig = {
     // 
-    httpWithCredentials: true,
+    httpWithCredentials: false,
     //
-    urlPostImport: "https://localhost:44373/import",
+    urlPostImport: "http://localhost:44373/import",
     //
-    urlGetResults: "https://localhost:44373/results?uploadid={0}"
+    urlGetResults: "http://localhost:44373/results?uploadid={0}"
 }
