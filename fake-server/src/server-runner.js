@@ -4,7 +4,7 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const cors = require('cors');
 const multer  = require('multer')
-const pharmProcessor = require('./pharmacyProcessor');
+const pharmProcessor = require('./pharmacy-processor');
 // add lowdb: https://github.com/typicode/lowdb 
 
 const multerUpload = multer({ dest: 'uploads/' });
