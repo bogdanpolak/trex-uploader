@@ -1,4 +1,4 @@
-exports.processFile = function (file) {
+function processFile (file) {
     // ---------------------------------------
     // file.destination: 'uploads/'
     // file.originalname = 'AFaclity_Purchase_09_2020.csv'
@@ -15,3 +15,5 @@ exports.processFile = function (file) {
         upload: file.path
     }
 };
+
+module.exports = {processFile};
