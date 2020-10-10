@@ -34,3 +34,6 @@ GET http://localhost:44373/results
 
 ### Get all results with uploadid paramerter (not used by JSON-Server)
 GET http://localhost:44373/results?uploadid=11111111-33b3-44fb-76b2-08d866c9db60
+
+### Get test CSV data
+GET http://localhost:44373/test-csv
