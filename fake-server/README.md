@@ -29,5 +29,8 @@ To test fake-server:
 npm init
 npm install express multer cors
 npm install d3-dsv
-npm install --save-dev mocha chai
+install mocha -g
+npm install mocha chai --save-dev 
+install gulp -g
+install gulp gulp-mocha gulp-util --save-dev 
 ```
