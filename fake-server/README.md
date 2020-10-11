@@ -34,3 +34,5 @@ npm install mocha chai --save-dev
 install gulp -g
 install gulp gulp-mocha gulp-util --save-dev 
 ```
+
+gulp-util is deprecated - replace it, following the guidelines at https://medium.com/gulpjs/gulp-util-ca3b1f9f9ac5
