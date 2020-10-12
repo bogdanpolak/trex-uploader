@@ -14,32 +14,45 @@ const validaton = {
     ERROR: 'error'
 }
 
+const ok = () =>  ({result: validaton.OK});
+const error = (msg) => ({result: validaton.ERROR, message: msg});
+
+
 function ndcValidator (ndc) {
+    if (ndc==='')
+        return error('NDC is empty')
     if (Number.isInteger(ndc)) {
         const ndcValue = parseInt(ndc);
-        const len = ndcValue.toString().length;
-        if (ndcValue<=0) return validaton.ERROR;
-        if (len>11) return validaton.WARNING;
-        return validaton.OK;
-    } else {
-        return validaton.ERROR
+        if (ndcValue===0) 
+            return error('NDC is equal to 0');
+        if (ndcValue<0) 
+            return error('NDC has negative value');
+        if (ndcValue.toString().length>11) 
+            return error('NDC has more then 11 digits');
+        return ok();
     }
+    return ok();
 }
 
 describe('ndcValidator', function() {
     it('should return OK when ndc is a positive number', function() {
-        ndcValidator(5).should.be.equal(validaton.OK);
+        ndcValidator(5).should.include(
+            {result: validaton.OK});
     });
     it('should return ERROR when ndc is zero', function() {
-        ndcValidator(0).should.be.equal(validaton.ERROR);
+        ndcValidator(0).should.include(
+            {result: validaton.ERROR, message: 'NDC is equal to 0'});
     });
     it('should return ERROR when ndc is a number less then zero', function() {
-        ndcValidator(-1).should.be.equal(validaton.ERROR);
+        ndcValidator(-1).should.include(
+            {result: validaton.ERROR, message:'NDC has negative value'});
     });
     it('should return ERROR when ndc is empty text', function() {
-        ndcValidator('').should.be.equal(validaton.ERROR);
+        ndcValidator('').should.include(
+            {result: validaton.ERROR, message:'NDC is empty'});
     });
-    it('should return WARNING when ndc is a number with 12 digits', function() {
-        ndcValidator(123456789012).should.be.equal(validaton.WARNING);
+    it('should return ERROR when ndc is a number with 12 digits', function() {
+        ndcValidator(123456789012).should.include(
+            {result: validaton.ERROR, message:'NDC has more then 11 digits'});
     });
 });
