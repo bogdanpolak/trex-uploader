@@ -20,7 +20,7 @@ node server.js
 
 To test fake-server:
 
-- Open file `test.http`
+- Open file `tests\integration-tests.http`
 - Press `Send Request` command (**REST Client** extension have to be installed)
 
 # Node JS packages
@@ -29,4 +29,10 @@ To test fake-server:
 npm init
 npm install express multer cors
 npm install d3-dsv
+install mocha -g
+npm install mocha chai --save-dev 
+install gulp -g
+install gulp gulp-mocha gulp-util --save-dev 
 ```
+
+gulp-util is deprecated - replace it, following the guidelines at https://medium.com/gulpjs/gulp-util-ca3b1f9f9ac5
