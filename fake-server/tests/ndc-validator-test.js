@@ -17,6 +17,10 @@ describe('ndcValidator', function() {
         ndcValidator('12345-1234-12').should.include(
             {result: validaton.OK});
     });
+    it('should return ERROR when ndc is null', function() {
+        ndcValidator(null).should.include(
+            {result: validaton.ERROR, message: 'NDC is empty'});
+    });
     it('should return ERROR when ndc is zero', function() {
         ndcValidator(0).should.include(
             {result: validaton.ERROR, message: 'NDC is equal to 0'});
