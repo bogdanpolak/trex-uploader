@@ -16,6 +16,12 @@ cd fake-server
 node server.js
 ```
 
+# npm Scripts
+
+- `npm start`  = `node server.js`
+- `npm test` = `gulp mocha` (run test suite once)
+- `npm test-watch` = `gulp watch` (live testing mode with active watch)
+
 ## Test
 
 To test fake-server:
