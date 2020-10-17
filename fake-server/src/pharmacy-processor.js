@@ -1,6 +1,6 @@
 // -------------------------------------------------------
 // exported:
-// function processFile (file,uploadid)
+// function processFile (file, lowdb)
 // -------------------------------------------------------
 // uploadid: cbd35731f7e95e25ff6759da60a2e332
 // file = {
@@ -17,7 +17,6 @@
 
 const fsp = require('fs').promises;
 const d3 = require("d3-dsv");
-// TODO: add lowdb: https://github.com/typicode/lowdb 
 // TRex ---------
 const dataValidator = require("./data-validator");
 const detector = require("./mappings-detector");
@@ -30,9 +29,8 @@ function parseCSV (csvtext) {
     });
 }
 
-function logProcessorState (file, uploadid) {
+function logProcessorState (file, data) {
     console.log({
-        uploadid: uploadid,
         started: Date(), 
         original: file.destination + file.originalname,
         upload: file.path,
@@ -40,7 +38,7 @@ function logProcessorState (file, uploadid) {
     })
 }
 
-function processFile (file) {
+function processFile (file, lowdb) {
     const filename = file.path;
     fsp.readFile(filename, "utf8")
         .then( (textdata) => parseCSV(textdata) )
@@ -49,7 +47,7 @@ function processFile (file) {
                 mappings = detector.detectMappings(data);
                 // TODO: if (!mappings) - use promises 
                 results = dataValidator.validate(mappings,data);
-                setTimeout(() => logProcessorState(), 2000);
+                setTimeout(() => logProcessorState(file, data), 2000);
             }, 0);
         } );
     return file.filename;

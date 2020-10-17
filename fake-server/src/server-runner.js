@@ -4,8 +4,9 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const cors = require('cors');
 const multer  = require('multer')
-// add lowdb: https://github.com/typicode/lowdb 
-// TRex ---------
+const lowdb = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+ // TRex ---------
 const pharmacyProcessor = require('./pharmacy-processor');
 
 const multerUpload = multer({ dest: 'uploads/' });
@@ -22,30 +23,22 @@ function genUUID() {
 }
 
 const dbfilename = 'db.json';
-
-function loadDatabase() {
-    return new Promise((resolve, reject) => {
-        fsp.readFile(dbfilename, 'utf8')
-            .then ( (data) => resolve( JSON.parse(data) ))
-    });
-};
+const adapter = new FileSync(dbfilename);
+const db = lowdb(adapter);
 
 const ServerRunner = {
     status: 0,
 
     appGetResults: function (req, res, next) {
-        loadDatabase()
-            .then ( (database) => {
-                console.log("[HTTP] GET /results");
-                res.json(database.results);
-            })
-            .catch ( (err) => next(err) );
+        console.log("[HTTP] GET /results");
+        results=db.get('results').value();
+        res.json(results);
     },
     appPostImport: function (req, res) {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
         this.status=0;
         if ((req.file) && (req.body.facilityid) && (req.body.period)) {
-            const uploadid = pharmacyProcessor.processFile(req.file);
+            const uploadid = pharmacyProcessor.processFile(req.file, db);
             res.json({ uploadid: uploadid });
         }
         else
