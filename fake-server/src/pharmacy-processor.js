@@ -52,6 +52,7 @@ function processFile (file) {
                 setTimeout(() => logProcessorState(), 2000);
             }, 0);
         } );
+    return file.filename;
 };
 
 module.exports = {processFile};

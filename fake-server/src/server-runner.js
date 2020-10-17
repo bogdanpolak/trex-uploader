@@ -4,8 +4,9 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const cors = require('cors');
 const multer  = require('multer')
-const pharmProcessor = require('./pharmacy-processor');
 // add lowdb: https://github.com/typicode/lowdb 
+// TRex ---------
+const pharmacyProcessor = require('./pharmacy-processor');
 
 const multerUpload = multer({ dest: 'uploads/' });
 
@@ -44,9 +45,8 @@ const ServerRunner = {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
         this.status=0;
         if ((req.file) && (req.body.facilityid) && (req.body.period)) {
-            const uploadid = genUUID();
-            setTimeout(() => pharmProcessor.processFile(req.file,uploadid), 0);
-            res.json({uploadid: uploadid });
+            const uploadid = pharmacyProcessor.processFile(req.file);
+            res.json({ uploadid: uploadid });
         }
         else
             res.json({uploadid: "11111111-2222-3333-76b2-08d866c9db60"});
