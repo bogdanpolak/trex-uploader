@@ -8,6 +8,7 @@ const lowdb = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
  // TRex ---------
 const pharmacyProcessor = require('./pharmacy-processor');
+const { write } = require('lowdb/adapters/FileSync');
 
 const multerUpload = multer({ dest: 'uploads/' });
 
@@ -25,6 +26,9 @@ function genUUID() {
 const dbfilename = 'db.json';
 const adapter = new FileSync(dbfilename);
 const db = lowdb(adapter);
+// Uncomment next line to delete all uploads from database
+db.set('uploads', []).write();
+
 
 const ServerRunner = {
     status: 0,
@@ -38,7 +42,34 @@ const ServerRunner = {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
         this.status=0;
         if ((req.file) && (req.body.facilityid) && (req.body.period)) {
-            const uploadid = pharmacyProcessor.processFile(req.file, db);
+            // Verify uploade file format
+            if (req.file.mimetype!='text/csv' || req.file.encoding != '7bit') {
+                res.status(406)
+                    .send('{"error":"Not Found. Unsupported file format, expected text file in CSV format"}');
+                return;
+            }
+            // Store information
+            const originalname = req.file.originalname; // 'AFaclity_Purchase_09_2020.csv'
+            const uploadid = req.file.filename;
+            const filepath = req.file.path // = 'uploads/cbd35731f7e95e25ff6759da60a2e332'
+            db.get('uploads')
+                .push({
+                    id: uploadid, 
+                    filename: originalname, 
+                    upload: filepath,
+                    facilityid: req.body.facilityid, 
+                    period: req.body.period,
+                    status: 0})
+                .write();
+            /* Update status:
+            var row = db.get('uploads')
+                .find({id: uploadid})
+                .value();
+            row.status = 1;
+            db.write();
+            */
+
+            pharmacyProcessor.processFile(req.file, db);
             res.json({ uploadid: uploadid });
         }
         else

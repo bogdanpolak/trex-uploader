@@ -27,7 +27,12 @@ const uploadPageProcesor = {
         xhr.withCredentials = this.withCredentials;
         const self = this;
         xhr.addEventListener( 'load', function( event ) {
-            if (self.onSucsses) self.onSucsses();
+            if (this.status >= 300) {
+                const json = JSON.parse(xhr.responseText);
+                if (self.onFailure) self.onFailure(this.status, json.error);
+            } else {
+                if (self.onSucsses) self.onSucsses();
+            }
         } );
         xhr.addEventListener( 'error', function( event ) {
             if (self.onFailure) self.onFailure();
@@ -204,8 +209,8 @@ const trexApplication = {
             uploadPageProcesor.hide();
             progressPageProcesor.show();
         }
-        uploadPageProcesor.onFailure = () => {
-            alert( 'Oops! Something went wrong.' );
+        uploadPageProcesor.onFailure = (status, message) => {
+            alert( `Error [${status}]. ${message}` );
         }
         progressPageProcesor.onSucsses = () => {
             setTimeout(() => { 
