@@ -3,7 +3,7 @@
 // jshint expr: true
 
 const chai = require('chai');
-const {validaton, ndcValidator} = require('../src/validators');
+const {validaton, ndcValidator} = require('../src/cell-validators');
 
 const expect = chai.expect;
 chai.should();
