@@ -16,6 +16,12 @@ cd fake-server
 node server.js
 ```
 
+# npm Scripts
+
+- `npm start`  = `node server.js`
+- `npm test` = `gulp mocha` (run test suite once)
+- `npm test-watch` = `gulp watch` (live testing mode with active watch)
+
 ## Test
 
 To test fake-server:
@@ -32,7 +38,8 @@ npm install d3-dsv
 install mocha -g
 npm install mocha chai --save-dev 
 install gulp -g
-install gulp gulp-mocha gulp-util --save-dev 
+install gulp gulp-mocha gulp-util --save-dev
+npm install lowdb
 ```
 
 gulp-util is deprecated - replace it, following the guidelines at https://medium.com/gulpjs/gulp-util-ca3b1f9f9ac5

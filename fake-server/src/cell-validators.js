@@ -9,7 +9,7 @@ const error = (msg) => ({result: validaton.ERROR, message: msg});
 const warning = (msg) => ({result: validaton.WARNING, message: msg});
 
 function ndcValidator (ndc) {
-    if (ndc==='')
+    if (ndc===null || ndc==='')
         return error('NDC is empty')
     if (Number.isInteger(ndc)) {
         const ndcValue = parseInt(ndc);

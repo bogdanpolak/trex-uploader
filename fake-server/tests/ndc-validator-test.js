@@ -3,7 +3,7 @@
 // jshint expr: true
 
 const chai = require('chai');
-const {validaton, ndcValidator} = require('../src/validators');
+const {validaton, ndcValidator} = require('../src/cell-validators');
 
 const expect = chai.expect;
 chai.should();
@@ -16,6 +16,10 @@ describe('ndcValidator', function() {
     it('should return OK when ndc has 5-4-2 format', function() {
         ndcValidator('12345-1234-12').should.include(
             {result: validaton.OK});
+    });
+    it('should return ERROR when ndc is null', function() {
+        ndcValidator(null).should.include(
+            {result: validaton.ERROR, message: 'NDC is empty'});
     });
     it('should return ERROR when ndc is zero', function() {
         ndcValidator(0).should.include(

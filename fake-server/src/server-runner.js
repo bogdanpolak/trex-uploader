@@ -4,8 +4,11 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const cors = require('cors');
 const multer  = require('multer')
-const pharmProcessor = require('./pharmacy-processor');
-// add lowdb: https://github.com/typicode/lowdb 
+const lowdb = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+// TRex ---------
+const pharmacyProcessor = require('./pharmacy-processor');
+const uploadsRepository = require('./uploads-repository');
 
 const multerUpload = multer({ dest: 'uploads/' });
 
@@ -21,35 +24,53 @@ function genUUID() {
 }
 
 const dbfilename = 'db.json';
+const adapter = new FileSync(dbfilename);
+const db = lowdb(adapter);
+// Uncomment next line to delete all uploads from database
+db.set('uploads', []).write();
 
-function loadDatabase() {
-    return new Promise((resolve, reject) => {
-        fsp.readFile(dbfilename, 'utf8')
-            .then ( (data) => resolve( JSON.parse(data) ))
-    });
-};
+const CreateUpload = (request, created) => ({
+    id: request.file.filename, 
+    original: request.file.originalname, // AFaclity_Purchase_09_2020.csv
+    upload: request.file.path, // uploads/cbd35731f7e95e25ff6759da60a2e332
+    facilityid: request.body.facilityid, 
+    period: request.body.period,
+    created: created.toISOString(), 
+});
 
 const ServerRunner = {
     status: 0,
 
-    appGetResults: function (req, res, next) {
-        loadDatabase()
-            .then ( (database) => {
-                console.log("[HTTP] GET /results");
-                res.json(database.results);
-            })
-            .catch ( (err) => next(err) );
-    },
     appPostImport: function (req, res) {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
         this.status=0;
         if ((req.file) && (req.body.facilityid) && (req.body.period)) {
-            const uploadid = genUUID();
-            setTimeout(() => pharmProcessor.processFile(req.file,uploadid), 0);
-            res.json({uploadid: uploadid });
+            // Verify uploade file format
+            if (req.file.mimetype!='text/csv' || req.file.encoding != '7bit') {
+                res.status(406)
+                    .send('{"error":"Not Found. Unsupported file format, expected text file in CSV format"}');
+                return;
+            }
+            const upload = CreateUpload(req, new Date());
+            uploadsRepository.addUpload(db, upload);
+            pharmacyProcessor.processFile(db, upload);
+            uploadsRepository.updateStatus(db, upload.id, 10);
+            res.json({ uploadid: upload.id });
         }
         else
             res.json({uploadid: "11111111-2222-3333-76b2-08d866c9db60"});
+    },
+    appGetResults: function (req, res, next) {
+        console.log("[HTTP] GET /results");
+        if (!'uploadid' in req.query) {
+            res.status(404)
+                .send('{"error":"Not Found. Unsupported file format, expected text file in CSV format"}');
+            return;
+        }
+        const uploadid = req.query.uploadid;
+        const upload = uploadsRepository.getUpload(db, uploadid);
+        // TODO: Check row is null
+        res.json({status: upload.status, results: upload.results});
     }
 }
 
