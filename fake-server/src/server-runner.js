@@ -60,7 +60,7 @@ const CreateUpload = (request, created) => ({
 const ServerRunner = {
     status: 0,
 
-    appPostImport: function (req, res) {
+    appPostImport: function (req, res, next) {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
         this.status=0;
         if ((req.file) && (req.body.facilityid) && (req.body.period)) {
@@ -78,6 +78,17 @@ const ServerRunner = {
         }
         else
             res.json({uploadid: "11111111-2222-3333-76b2-08d866c9db60"});
+    },
+    appGetStatus(req, res, next){
+        console.log("[HTTP] GET /progress");
+        if (!'uploadid' in req.query) {
+            res.status(404)
+                .send('{"error":"Not Found. Unsupported file format, expected text file in CSV format"}');
+            return;
+        }
+        const uploadid = req.query.uploadid;
+        const upload = uploadsRepository.getUpload(db, uploadid);
+        res.json( {status: upload.status} );
     },
     appGetResults: function (req, res, next) {
         console.log("[HTTP] GET /results");
@@ -111,10 +122,10 @@ function runExpressServer(port) {
     startHttpServer(app, port);
 
     app.post('/import', multerUpload.single('file'), 
-        (req, res, next) => ServerRunner.appPostImport(req, res)
+        (req, res, next) => ServerRunner.appPostImport(req, res, next)
     );
     app.get('/progress', 
-        (req, res) => res.json( {status: ServerRunner.status+=1} )
+        (req, res, next) => ServerRunner.appGetStatus(req, res, next)
     );
     app.get('/results', 
         (req, res, next) => ServerRunner.appGetResults(req, res, next)
