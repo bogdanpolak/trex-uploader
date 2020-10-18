@@ -27,7 +27,26 @@ const dbfilename = 'db.json';
 const adapter = new FileSync(dbfilename);
 const db = lowdb(adapter);
 // Uncomment next line to delete all uploads from database
-db.set('uploads', []).write();
+db.set('uploads', [{
+    id: "11112222333344445555666677778888",
+    original: "Purchase_09_2020.csv",
+    upload: "../data/Purchase_09_2020.csv",
+    facilityid: "1111",
+    period: "2020-09",
+    created: "2020-10-01",
+    status: 100,
+    results: [{
+        type: "error",
+        message: "NDC is empty",
+        row: 1,
+        column: 2
+        }, {
+        type: "error",
+        message: "Invalid NDC format, expected: 5-4-2",
+        row: 4,
+        column: 2
+        }]
+}]).write();
 
 const CreateUpload = (request, created) => ({
     id: request.file.filename, 
