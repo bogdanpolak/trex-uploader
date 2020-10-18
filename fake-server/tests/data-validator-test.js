@@ -16,19 +16,22 @@ function createMapping(){
     return mappings;
 };
 
-const createData = (rowdata) =>  ({
-    0: ['DESC','NDC','COST','VOL','TOTAL'],
-    1: ['Aaaa', rowdata.ndc, rowdata.cost, rowdata.volume, rowdata.total],
-    2: ['Bbbb', '2222222', 9.50, 3, 28.50]
-});
+const createData = (rowdata) =>  [
+    ['DESC','NDC','COST','VOL','TOTAL'],
+    ['Aaaa', rowdata.ndc, rowdata.cost, rowdata.volume, rowdata.total],
+    ['Bbbb', '2222222', 9.50, 3, 28.50]
+];
 
-const testValidate = (rowdata) => dataValidator.validate( 
-    createMapping(), createData(rowdata) );
+const testValidate = (rowdata) => dataValidator.validate( createMapping(), 
+    createData(rowdata) );
 
 describe('validate', function() {
     it('should return empty array when data are valid', function() {
         testValidate({ndc:'111111111', cost:5, volume:2, total:10}).should
-            .to.be.an('array')
-            .to.be.empty;
+            .to.be.an('array').to.have.lengthOf(0);
+    });
+    it('should return one error when ndc is zero', function() {
+        testValidate({ndc: 0, cost:5, volume:2, total:10}).should
+            .to.have.lengthOf(1);
     });
 });
