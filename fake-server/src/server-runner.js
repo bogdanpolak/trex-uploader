@@ -27,8 +27,16 @@ const dbfilename = 'db.json';
 const adapter = new FileSync(dbfilename);
 const db = lowdb(adapter);
 // Uncomment next line to delete all uploads from database
-// db.set('uploads', []).write();
+db.set('uploads', []).write();
 
+const CreateUpload = (request, created) => ({
+    id: request.file.filename, 
+    original: request.file.originalname, // AFaclity_Purchase_09_2020.csv
+    upload: request.file.path, // uploads/cbd35731f7e95e25ff6759da60a2e332
+    facilityid: request.body.facilityid, 
+    period: request.body.period,
+    created: created.toISOString(), 
+});
 
 const ServerRunner = {
     status: 0,
@@ -43,17 +51,11 @@ const ServerRunner = {
                     .send('{"error":"Not Found. Unsupported file format, expected text file in CSV format"}');
                 return;
             }
-            const uploadid = req.file.filename;
-            uploadsRepository.addUpload(db, {
-                id: uploadid, 
-                filename: req.file.originalname, // AFaclity_Purchase_09_2020.csv
-                upload: req.file.path, // uploads/cbd35731f7e95e25ff6759da60a2e332
-                facilityid: req.body.facilityid, 
-                period: req.body.period,
-            });
-            pharmacyProcessor.processFile(req.file, db);
-            uploadsRepository.updateStatus(db, uploadid, 10);
-            res.json({ uploadid: uploadid });
+            const upload = CreateUpload(req, new Date());
+            uploadsRepository.addUpload(db, upload);
+            pharmacyProcessor.processFile(db, upload);
+            uploadsRepository.updateStatus(db, upload.id, 10);
+            res.json({ uploadid: upload.id });
         }
         else
             res.json({uploadid: "11111111-2222-3333-76b2-08d866c9db60"});

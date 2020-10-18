@@ -41,6 +41,7 @@ function updateResults (lowdb, uploadid, results){
         .find({id: uploadid})
         .value();
     // TODO: Check row is null
+    row.status = 100;
     row.results = results;
     lowdb.write();
 }
