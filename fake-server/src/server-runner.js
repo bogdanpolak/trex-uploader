@@ -1,4 +1,5 @@
 const express = require('express');
+const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const fsp = require('fs').promises;
@@ -21,6 +22,19 @@ function genUUID() {
         });
     var str = new Date().getTime().toString(16).slice(1);
     return UUID.replace(/[z]/, str);
+}
+
+const HTTP_CODES = {
+    BadRequest: 400,       // incorrect syntax - request could not be understood
+    Unauthorized: 401,     // request requires user authentication information
+    Forbidden: 403,        // client does not have access rights to the content
+    NotFound: 404,         // can't find the requested resource
+    MethodNotAllowed: 405, // method is known but has been disabled
+    NotAcceptable: 406,    // doesn’t find content that conforms to requested criteria (Accept header)
+    Gone: 410,             // requested resource is no longer available
+    UnsupportedMediaType: 415, // mediatype in request (Content-type) is not supported
+    InternalServerError: 500,  // unexpected condition (eg. exception)
+    NotImplemented: 501    // new function - not fully implemented
 }
 
 const dbfilename = 'db.json';
@@ -57,49 +71,49 @@ const CreateUpload = (request, created) => ({
     created: created.toISOString(), 
 });
 
+const raiseJsonError = 
+    (res, code, msg) => res.status(code).send({code: code, error: msg});
+
 const ServerRunner = {
     status: 0,
 
     appPostImport: function (req, res, next) {
         console.log('[HTTP] POST %s (%s)', req.url, new Date().toISOString());
         this.status=0;
-        if ((req.file) && (req.body.facilityid) && (req.body.period)) {
-            // Verify uploade file format
-            if (req.file.mimetype!='text/csv' || req.file.encoding != '7bit') {
-                res.status(406)
-                    .send('{"error":"Not Found. Unsupported file format, expected text file in CSV format"}');
-                return;
-            }
-            const upload = CreateUpload(req, new Date());
-            uploadsRepository.addUpload(db, upload);
-            pharmacyProcessor.processFile(db, upload);
-            uploadsRepository.updateStatus(db, upload.id, 10);
-            res.json({ uploadid: upload.id });
-        }
-        else
-            res.json({uploadid: "11111111-2222-3333-76b2-08d866c9db60"});
+        if (!req.file || !req.body.facilityid && !req.body.period)
+            return raiseJsonError(res, HTTP_CODES.BadRequest, 
+                "Invalid parameters posted by form");
+        if (req.file.mimetype!='text/csv' || req.file.encoding != '7bit')
+            return raiseJsonError(res, HTTP_CODES.NotAcceptable,
+                "Unsupported file format, expected text file in CSV format");
+        const upload = CreateUpload(req, new Date());
+        uploadsRepository.addUpload(db, upload);
+        pharmacyProcessor.processFile(db, upload);
+        uploadsRepository.updateStatus(db, upload.id, 10);
+        res.json({ uploadid: upload.id });
     },
     appGetStatus(req, res, next){
         console.log("[HTTP] GET /progress");
-        if (!'uploadid' in req.query) {
-            res.status(404)
-                .send('{"error":"Not Found. Unsupported file format, expected text file in CSV format"}');
-            return;
-        }
         const uploadid = req.query.uploadid;
+        if (!uploadid)
+            return raiseJsonError(res, HTTP_CODES.NotFound, 
+                "Request not accepted, required uploadid parameter");
         const upload = uploadsRepository.getUpload(db, uploadid);
+        if (!upload)
+            return raiseJsonError(res, HTTP_CODES.NotFound, 
+                "Request not accepted, invalid uploadid value");
         res.json( {status: upload.status} );
     },
     appGetResults: function (req, res, next) {
         console.log("[HTTP] GET /results");
-        if (!'uploadid' in req.query) {
-            res.status(404)
-                .send('{"error":"Not Found. Unsupported file format, expected text file in CSV format"}');
-            return;
-        }
         const uploadid = req.query.uploadid;
+        if (!uploadid)
+            return raiseJsonError(res, HTTP_CODES.NotFound, 
+                "Request not accepted, required uploadid parameter");
         const upload = uploadsRepository.getUpload(db, uploadid);
-        // TODO: Check row is null
+        if (!upload)
+            return raiseJsonError(res, HTTP_CODES.NotFound, 
+                "Request not accepted, invalid uploadid value");
         res.json({status: upload.status, results: upload.results});
     }
 }
@@ -119,6 +133,7 @@ function runExpressServer(port) {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false })); 
     app.use(cors());
+
     startHttpServer(app, port);
 
     app.post('/import', multerUpload.single('file'), 
