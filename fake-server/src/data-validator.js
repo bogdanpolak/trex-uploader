@@ -54,21 +54,6 @@ function validate(mappings, data) {
         } 
     }
     return report;
-
-    const results = [
-        {
-            "type": "error",
-            "message": "NDC cannot be empty",
-            "row": 1,
-            "column": 5
-        },{
-            "type": "error",
-            "message": "Purchase cost is not a numeric value",
-            "row": 3,
-            "column": 8
-        }
-    ];
-    return results;
 }
 
 module.exports = {validate};
