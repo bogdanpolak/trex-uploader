@@ -169,7 +169,9 @@ const reportPageProcesor = {
         })
         .then(function (data) {
             console.log(data);
-            var result = data.reduce(function (previous, obj, idx) {
+            // data = { status:0..100, results:[...] }
+            const results = data.results; 
+            var result = results.reduce(function (previous, obj, idx) {
                 const j = previous.findIndex((o2)=>(o2.message==obj.message));
                 if (j>=0)
                     previous[j].count += 1;
