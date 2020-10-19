@@ -8,11 +8,13 @@ const ok = () =>  ({result: validaton.OK});
 const error = (msg) => ({result: validaton.ERROR, message: msg});
 const warning = (msg) => ({result: validaton.WARNING, message: msg});
 
+const onlyDigitsWithSign = (value) => /^-*\d+$/.test(value);
+
 function ndcValidator (ndc) {
     if (ndc===null || ndc==='')
         return error('NDC is empty')
-    if (Number.isInteger(ndc)) {
-        const ndcValue = parseInt(ndc);
+    const ndcValue = parseInt(ndc);
+    if (onlyDigitsWithSign(ndc) && !isNaN(ndcValue)){
         if (ndcValue===0) 
             return error('NDC is equal to 0');
         if (ndcValue<0) 

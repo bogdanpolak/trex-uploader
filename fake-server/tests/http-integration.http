@@ -1,0 +1,24 @@
+### Get progress
+GET http://localhost:44373/progress?uploadid=11112222333344445555666677778888
+
+### Get all results with uploadid paramerter (not used by JSON-Server)
+GET http://localhost:44373/results?uploadid=11112222333344445555666677778888
+
+### Get test CSV data
+GET http://localhost:44373/test-csv
+
+# --------------------------------------------------------
+# Error responses
+
+### Post import (form with file) - should return: 400. Bad Request
+POST http://localhost:44373/import
+
+### Get progress - should return 404 ERROR
+GET http://localhost:44373/progress
+
+### Get progress for invalid uploadid - should return 404 ERROR
+GET http://localhost:44373/progress?uploadid=1234567890
+
+### Get all results - should return 404 ERROR
+GET http://localhost:44373/results
+

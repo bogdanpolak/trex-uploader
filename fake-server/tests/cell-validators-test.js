@@ -13,6 +13,10 @@ describe('ndcValidator', function() {
         ndcValidator(5).should.include(
             {result: validaton.OK});
     });
+    it('should return OK when ndc has string number 111111', function() {
+        ndcValidator('111111').should.include(
+            {result: validaton.OK});
+    });
     it('should return OK when ndc has 5-4-2 format', function() {
         ndcValidator('12345-1234-12').should.include(
             {result: validaton.OK});
