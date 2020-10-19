@@ -42,9 +42,9 @@ function validate(mappings, data) {
             if ('validator' in columns[colidx]) {
                 value = row[colidx];
                 result = columns[colidx].validator(value);
-                if (result.result === validaton.ERROR) {
+                if (result.result !== validaton.OK) {
                     report.push({
-                        "type": "error",
+                        "type": result.result,
                         "message": result.message,
                         "row": rowidx,
                         "column": colidx

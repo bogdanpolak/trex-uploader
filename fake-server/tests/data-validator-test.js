@@ -16,22 +16,26 @@ function createMapping(){
     return mappings;
 };
 
+
 const createData = (rowdata) =>  [
     ['DESC','NDC','COST','VOL','TOTAL'],
-    ['Aaaa', rowdata.ndc, rowdata.cost, rowdata.volume, rowdata.total],
+    ['Aaaa', rowdata.ndc, rowdata.cost || 5, rowdata.volume || 2, rowdata.total || 10],
     ['Bbbb', '2222222', 9.50, 3, 28.50]
 ];
 
-const testValidate = (rowdata) => dataValidator.validate( createMapping(), 
-    createData(rowdata) );
+const mapping = createMapping();
 
 describe('validate', function() {
     it('should return empty array when data are valid', function() {
-        testValidate({ndc:'111111111', cost:5, volume:2, total:10}).should
-            .to.be.an('array').to.have.lengthOf(0);
+        dataValidator.validate( mapping, createData({ndc:'111111111'}) ).should
+            .have.lengthOf(0);
     });
     it('should return one error when ndc is zero', function() {
-        testValidate({ndc: 0, cost:5, volume:2, total:10}).should
-            .to.have.lengthOf(1);
+        dataValidator.validate( mapping, createData({ndc:0}) ).should
+            .deep.equal([{type: 'error', message: 'NDC is equal to 0', column: 1, row: 1}]);
+    });
+    it('should return one error when ndc is zero', function() {
+        dataValidator.validate( mapping, createData({ndc:'prefix12345111122'}) ).should
+            .deep.equal([{type: 'warning', message: 'NDC with a prefix', column: 1, row: 1}]);
     });
 });
